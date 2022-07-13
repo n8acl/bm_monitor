@@ -1,0 +1,5 @@
+requests
+telebot
+telethon
+discord-webhook
+python-socketio[client]
