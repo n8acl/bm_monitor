@@ -3,7 +3,7 @@
 # Brandmeister Monitor
 # Develped by: Michael Clemens, DK1MI
 # Refactored by: Jeff Lehman, N8ACL
-# Current Version: 1.0
+# Current Version: 1.1
 # Original Script: https://codeberg.org/mclemens/pyBMNotify
 # Refactored Script: https://github.com/n8acl/bm_monitor
 
@@ -117,46 +117,49 @@ def on_mqtt(data):
     notify = False
     now = int(time.time())
 
-    # check if callsign is monitored, the transmission has already been finished
-    # and the person was inactive for n seconds
-    if callsign in cfg.callsigns:
-        if callsign not in last_OM_activity:
-            last_OM_activity[callsign] = 9999999
-        inactivity = now - last_OM_activity[callsign]
-        if callsign not in last_OM_activity or inactivity >= cfg.min_silence:
-            # If the activity has happened in a monitored TG, remember the transmission start time stamp
-            if tg in cfg.talkgroups and stop_time > 0:
-                last_TG_activity[tg] = now
-            # remember the transmission time stamp of this particular DMR user
-            last_OM_activity[callsign] = now
-            notify = True
-    # Continue if the talkgroup is monitored, the transmission has been
-    # finished and there was no activity during the last n seconds in this talkgroup
-    elif tg in cfg.talkgroups and stop_time > 0:# and callsign not in cfg.noisy_calls:
-        if tg not in last_TG_activity:
-            last_TG_activity[tg] = 9999999
-        inactivity = now - last_TG_activity[tg]
-        # calculate duration of key down
-        duration = stop_time - start_time
-        # only proceed if the key down has been long enough
-        if duration >= cfg.min_duration:
-            if tg not in last_TG_activity or inactivity >= cfg.min_silence:
-                notify = True
-            elif cfg.verbose:
-                print("ignored activity in TG " + str(tg) + " from " + callsign + ": last action " + str(inactivity) + " seconds ago.")
-            last_TG_activity[tg] = now
     if cfg.verbose and callsign in cfg.noisy_calls:
         print("ignored noisy ham " + callsign)
+    
+    else:
+        # check if callsign is monitored, the transmission has already been finished
+        # and the person was inactive for n seconds
+        if callsign in cfg.callsigns:
+            if callsign not in last_OM_activity:
+                last_OM_activity[callsign] = 9999999
+            inactivity = now - last_OM_activity[callsign]
+            if callsign not in last_OM_activity or inactivity >= cfg.min_silence:
+                # If the activity has happened in a monitored TG, remember the transmission start time stamp
+                if tg in cfg.talkgroups and stop_time > 0:
+                    last_TG_activity[tg] = now
+                # remember the transmission time stamp of this particular DMR user
+                last_OM_activity[callsign] = now
+                notify = True
+        # Continue if the talkgroup is monitored, the transmission has been
+        # finished and there was no activity during the last n seconds in this talkgroup
+        elif tg in cfg.talkgroups and stop_time > 0:# and callsign not in cfg.noisy_calls:
+            if tg not in last_TG_activity:
+                last_TG_activity[tg] = 9999999
+            inactivity = now - last_TG_activity[tg]
+            # calculate duration of key down
+            duration = stop_time - start_time
+            # only proceed if the key down has been long enough
+            if duration >= cfg.min_duration:
+                if tg not in last_TG_activity or inactivity >= cfg.min_silence:
+                    notify = True
+                elif cfg.verbose:
+                    print("ignored activity in TG " + str(tg) + " from " + callsign + ": last action " + str(inactivity) + " seconds ago.")
+                last_TG_activity[tg] = now
 
-    if notify:
-        if cfg.pushover:
-            push_pushover(construct_message(call))
-        if cfg.telegram:
-            push_telegram(construct_message(call))
-        if cfg.dapnet:
-            push_dapnet(construct_message(call))
-        if cfg.discord:
-            push_discord(cfg.discord_wh_url, construct_message(call))
+
+        if notify:
+            if cfg.pushover:
+                push_pushover(construct_message(call))
+            if cfg.telegram:
+                push_telegram(construct_message(call))
+            if cfg.dapnet:
+                push_dapnet(construct_message(call))
+            if cfg.discord:
+                push_discord(cfg.discord_wh_url, construct_message(call))
 
 @sio.event
 def disconnect():
