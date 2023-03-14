@@ -43,4 +43,6 @@ If you reach out to me and have an error, please include what error you are gett
 
 ## Change Log
 
+* 12/23/2022 - Minor Update Release 1.1 - Fixed logic for ignoring Noisy calls (Callsigns to ignore)
+
 * 07/12/2022 - Inital Release

@@ -27,5 +27,5 @@ dapnet_callsigns = ["MYCALL"]
 dapnet_txgroup = "dl-all"
 
 # Discord Configuration
-discord = FALSE
+discord = False
 discord_wh_url = 'DISCORD_WEBHOOK_HERE'
