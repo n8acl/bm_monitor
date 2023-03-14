@@ -79,10 +79,12 @@ def push_pushover(msg):
 
 def push_telegram(msg):
     telegram_url = "https://api.telegram.org/bot" + cfg.telegram_api_hash + "/sendmessage"
+
     response = requests.post(
-        telegram_url, data=json.dumps(msg),
+        telegram_url, json = msg, # data=json.dumps(msg),
         headers={'Content-Type': 'application/json'}
     )
+
 
 # send pager notification via DAPNET. Disabled if not configured in config.py
 def push_dapnet(msg):
@@ -162,7 +164,7 @@ def on_mqtt(data):
             if cfg.pushover:
                 push_pushover(construct_message(call))
             if cfg.telegram:
-                push_telegram({'text': construct_message(call), 'chatid': cfg.telegram_api_id, "disable_notification": true})
+                push_telegram({'text': construct_message(call), 'chat_id': cfg.telegram_api_id, "disable_notification": True})
             if cfg.dapnet:
                 push_dapnet(construct_message(call))
             if cfg.discord:
