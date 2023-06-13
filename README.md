@@ -30,8 +30,7 @@ This script will push a notification to the following services:
 ## Contact
 If you have questions, please feel free to reach out to me. You can reach me in one of the following ways:
 
-- Twitter: @n8acl
-- Discord: Ravendos#7364
+- Discord: Ravendos
 - Mastodon: @n8acl@mastodon.radio
 - E-mail: n8acl@qsl.net
 
@@ -42,5 +41,7 @@ If you reach out to me and have an error, please include what error you are gett
 ---
 
 ## Change Log
+
+* 12/23/2022 - Minor Update Release 1.1 - Fixed logic for ignoring Noisy calls (Callsigns to ignore)
 
 * 07/12/2022 - Inital Release
