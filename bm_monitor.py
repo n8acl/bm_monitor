@@ -3,14 +3,13 @@
 # Brandmeister Monitor
 # Develped by: Michael Clemens, DK1MI
 # Refactored by: Jeff Lehman, N8ACL
-# Current Version: 1.1
+# Current Version: 1.2
 # Original Script: https://codeberg.org/mclemens/pyBMNotify
 # Refactored Script: https://github.com/n8acl/bm_monitor
 
 # Questions? Comments? Suggestions? Contact me one of the following ways:
 # E-mail: n8acl@qsl.net
-# Twitter: @n8acl
-# Discord: Ravendos#7364
+# Discord: Ravendos
 # Mastodon: @n8acl@mastodon.radio
 # Website: https://www.qsl.net/n8acl
 
@@ -105,7 +104,7 @@ def construct_message(c):
     # construct text message from various transmission properties
     out += c["SourceCall"] + ' (' + c["SourceName"] + ') was active on '
     out += str(tg) + ' (' + c["DestinationName"] + ') at '
-    out += time + ' (' + str(duration) + ' seconds)'
+    out += time + ' (' + str(duration) + ' seconds) UTC'
     # finally return the text message
     return out
 
@@ -119,17 +118,22 @@ def connect():
 @sio.on("mqtt")
 def on_mqtt(data):
     call = json.loads(data['payload'])
+
+    # if call["DestinationID"] in cfg.talkgroups:
+    #     print(call)
+
     tg = call["DestinationID"]
     callsign = call["SourceCall"]
     start_time = call["Start"]
     stop_time = call["Stop"]
+    event = call["Event"]
     notify = False
     now = int(time.time())
 
     if cfg.verbose and callsign in cfg.noisy_calls:
         print("ignored noisy ham " + callsign)
     
-    else:
+    elif event == 'Session-Stop' and callsign != '':
         # check if callsign is monitored, the transmission has already been finished
         # and the person was inactive for n seconds
         if callsign in cfg.callsigns:

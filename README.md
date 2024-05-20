@@ -41,6 +41,7 @@ If you reach out to me and have an error, please include what error you are gett
 ---
 
 ## Change Log
+* 05/20/2024 - Minor Update Release 1.2 - Added Logic to handle multiple events from BM to correctly identify the evetn needed to send a notification message
 
 * 12/23/2022 - Minor Update Release 1.1 - Fixed logic for ignoring Noisy calls (Callsigns to ignore)
 
